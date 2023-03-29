@@ -1,0 +1,30 @@
+name: ROS2 Kart Racing Competition Entry
+
+on:
+  push:
+    branches:
+      - competition
+
+jobs:
+  test_on_kartland:
+    runs-on: ubuntu-latest
+    container: 
+      image: gstavrinos/ros2ez
+      options: --user root
+    steps:
+      - name: Running the official ros2 kart racing competition action
+        uses: gstavrinos/ros2_kart_racing_action@master
+        with: 
+          token: "${{ secrets.PAT }}"
+          track: "kartland"
+  test_on_speedpark:
+    runs-on: ubuntu-latest
+    container: 
+      image: gstavrinos/ros2ez
+      options: --user root
+    steps:
+      - name: Running the official ros2 kart racing competition action
+        uses: gstavrinos/ros2_kart_racing_action@master
+        with: 
+          token: "${{ secrets.PAT }}"
+          track: "speedpark"

@@ -40,7 +40,7 @@ def generate_launch_description():
        name='ekf_filter_node',
        output='screen',
        parameters=[PathJoinSubstitution([FindPackageShare('kart_navigation'), 'config/ekf.yaml']), {'use_sim_time': LaunchConfiguration('use_sim_time')}]
-)
+    )
 
     return launch.LaunchDescription([
         declared_argument,

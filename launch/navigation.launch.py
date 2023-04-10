@@ -2,11 +2,11 @@
 import os
 import launch
 from ament_index_python.packages import get_package_share_directory
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess, RegisterEventHandler, TimerAction
 from launch.event_handlers import OnProcessStart, OnProcessExit
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
-from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression, FindExecutable
+from launch_ros.substitutions import FindPackageShare, FindPackagePrefix
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
@@ -31,6 +31,14 @@ def generate_launch_description():
             PathJoinSubstitution([FindPackageShare('slam_toolbox'), 'launch/online_async_launch.py'])
         ),
         launch_arguments={'slam_params_file': LaunchConfiguration('slam_params_file')}.items()
+    )
+
+    waypoint_follower = ExecuteProcess(
+        cmd=[[
+            FindExecutable(name='python3'),
+            ' /home/matthew/dev/ros2_ws/install/kart_navigation/lib/kart_navigation/waypoint_follower.py'
+        ]],
+        shell=True
     )
 
     # nav_launch = IncludeLaunchDescription(
@@ -82,6 +90,17 @@ def generate_launch_description():
         # robot_localization_node,
         # slam_launch,
         nav_launch,
-        twist_mux_node
+        twist_mux_node,
+        RegisterEventHandler(
+            event_handler=OnProcessStart(
+                target_action=twist_mux_node,
+                on_start=[
+                    TimerAction(
+                        period = 4.0,
+                        actions = [waypoint_follower]
+                    )
+                ],
+            )
+        )
     ])
 

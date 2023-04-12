@@ -36,7 +36,10 @@ def generate_launch_description():
     waypoint_follower = ExecuteProcess(
         cmd=[[
             FindExecutable(name='python3'),
-            ' /home/matthew/dev/ros2_ws/install/kart_navigation/lib/kart_navigation/waypoint_follower.py'
+            # ' /home/matthew/dev/ros2_ws/install/kart_navigation/lib/kart_navigation/waypoint_follower.py'
+            ' ',
+            FindPackagePrefix('kart_navigation'),
+            '/lib/kart_navigation/waypoint_follower.py'
         ]],
         shell=True
     )
